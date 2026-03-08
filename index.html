@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shark Bites — Algorithmic Sports Trading</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=JetBrains+Mono:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #020c19;
+      color: #ddeeff;
+      font-family: 'Outfit', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    /* ── Grid texture ───────────────────────────────────────── */
+    .bg-grid {
+      background-image:
+        linear-gradient(rgba(0,200,240,.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,200,240,.022) 1px, transparent 1px);
+      background-size: 72px 72px;
+    }
+
+    /* ── Hero gradient ──────────────────────────────────────── */
+    .hero-bg {
+      background:
+        radial-gradient(ellipse 90% 65% at 50% 105%, rgba(0,200,240,.10) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 50% at 88% 8%,   rgba(0,224,168,.05) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 55% at 12% 88%,  rgba(0,55,140,.14)  0%, transparent 60%),
+        #020c19;
+    }
+
+    /* ── Sonar rings ────────────────────────────────────────── */
+    @keyframes sonar {
+      0%   { transform: scale(0.04); opacity: 0.6; }
+      100% { transform: scale(1);    opacity: 0;   }
+    }
+    .sonar-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 200, 240, 0.14);
+    }
+
+    /* ── Ticker ─────────────────────────────────────────────── */
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .ticker-track {
+      display: flex;
+      animation: ticker 32s linear infinite;
+      width: max-content;
+    }
+
+    /* ── Animations ─────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1;   }
+      50%       { opacity: 0.3; }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-6px); }
+    }
+    .anim   { animation: fadeUp 0.85s cubic-bezier(.25,.46,.45,.94) both; }
+    .d1     { animation-delay: .1s;  }
+    .d2     { animation-delay: .25s; }
+    .d3     { animation-delay: .4s;  }
+    .d4     { animation-delay: .55s; }
+    .d5     { animation-delay: .7s;  }
+    .d6     { animation-delay: .85s; }
+
+    /* ── Typography ─────────────────────────────────────────── */
+    .heading-hero {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.2rem, 8.5vw, 7.8rem);
+      font-weight: 400;
+      line-height: 1.00;
+      letter-spacing: -0.03em;
+      color: #ddeeff;
+    }
+    .heading-section {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.4rem, 4.5vw, 4rem);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: #ddeeff;
+    }
+    .heading-card {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.65rem;
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #ddeeff;
+    }
+    .label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #00c8f0;
+    }
+    .body-text {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      color: #7aaac8;
+      line-height: 1.8;
+    }
+    .mono-data {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Nav ────────────────────────────────────────────────── */
+    nav {
+      background: rgba(2, 12, 25, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 200, 240, 0.07);
+    }
+    .nav-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.67rem;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: #5a8aaa;
+      text-decoration: none;
+      transition: color 0.2s ease;
+      padding: 4px 0;
+    }
+    .nav-link:hover      { color: #00c8f0; }
+    .nav-link:focus-visible {
+      outline: 2px solid #00c8f0;
+      outline-offset: 4px;
+      border-radius: 2px;
+    }
+
+    /* ── Buttons ─────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      border-radius: 2px;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition:
+        transform 0.18s cubic-bezier(.34,1.56,.64,1),
+        box-shadow 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+    }
+    .btn:focus-visible {
+      outline: 2px solid #00c8f0;
+      outline-offset: 4px;
+    }
+    .btn:active { transform: translateY(0) !important; }
+
+    .btn-primary {
+      padding: 14px 28px;
+      background: #00c8f0;
+      color: #020c19;
+      border: 1px solid #00c8f0;
+      box-shadow: 0 0 24px rgba(0,200,240,.38), 0 4px 16px rgba(0,0,0,.4);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 44px rgba(0,200,240,.55), 0 8px 24px rgba(0,0,0,.5);
+    }
+    .btn-outline {
+      padding: 13px 28px;
+      background: transparent;
+      color: #00c8f0;
+      border: 1px solid rgba(0,200,240,.28);
+    }
+    .btn-outline:hover {
+      transform: translateY(-2px);
+      border-color: rgba(0,200,240,.55);
+      background: rgba(0,200,240,.06);
+    }
+    .btn-sm {
+      padding: 10px 20px;
+      font-size: 0.78rem;
+    }
+
+    /* ── Cards ──────────────────────────────────────────────── */
+    .card {
+      background: rgba(7, 24, 40, 0.75);
+      border: 1px solid rgba(0, 200, 240, 0.08);
+      border-radius: 2px;
+      backdrop-filter: blur(12px);
+      box-shadow:
+        0 1px 0 rgba(0,200,240,.05) inset,
+        0 24px 48px rgba(0,0,0,.45);
+      transition:
+        border-color 0.3s ease,
+        box-shadow 0.3s ease,
+        transform 0.22s cubic-bezier(.34,1.56,.64,1);
+    }
+    .card:hover {
+      border-color: rgba(0,200,240,.22);
+      box-shadow:
+        0 1px 0 rgba(0,200,240,.08) inset,
+        0 32px 64px rgba(0,0,0,.55),
+        0 0 60px rgba(0,200,240,.05);
+    }
+
+    /* ── Sport cards ─────────────────────────────────────────── */
+    .sport-card {
+      text-align: center;
+      padding: 2rem 1.25rem;
+      transition:
+        border-color 0.3s ease,
+        box-shadow 0.3s ease,
+        transform 0.22s cubic-bezier(.34,1.56,.64,1);
+    }
+    .sport-card:hover {
+      border-color: rgba(0,200,240,.28) !important;
+      transform: translateY(-6px);
+      box-shadow: 0 28px 56px rgba(0,0,0,.55), 0 0 44px rgba(0,200,240,.06);
+    }
+
+    /* ── Step cards ──────────────────────────────────────────── */
+    .step-card {
+      position: relative;
+      overflow: hidden;
+      padding: 2.5rem;
+    }
+    .step-watermark {
+      position: absolute;
+      top: -16px;
+      right: 18px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 8rem;
+      font-weight: 300;
+      color: rgba(0,200,240,.045);
+      line-height: 1;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* ── Divider ─────────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,200,240,.14), transparent);
+    }
+
+    /* ── Feature list ────────────────────────────────────────── */
+    .feat {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 13px 0;
+      border-bottom: 1px solid rgba(0,200,240,.05);
+      font-size: 0.9rem;
+      color: #7aaac8;
+      line-height: 1.5;
+    }
+    .feat:last-child { border-bottom: none; }
+
+    /* ── Pricing card glow ───────────────────────────────────── */
+    .pricing-card {
+      border-color: rgba(0,200,240,.16) !important;
+      box-shadow:
+        0 0 80px rgba(0,200,240,.07),
+        0 40px 80px rgba(0,0,0,.55),
+        0 1px 0 rgba(0,200,240,.08) inset !important;
+    }
+
+    /* ── Scrollbar ───────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: #020c19; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,200,240,.2); border-radius: 2px; }
+
+    /* ── Responsive helpers ──────────────────────────────────── */
+    @media (max-width: 768px) {
+      .heading-hero { font-size: clamp(2.8rem, 13vw, 5rem); }
+      .step-watermark { font-size: 5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Grain texture overlay (fixed, full-screen) -->
+  <svg style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;opacity:.042;" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <rect width="100%" height="100%" filter="url(#grain)"/>
+  </svg>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       NAV
+  ══════════════════════════════════════════════════════════════ -->
+  <nav style="position:fixed;top:0;left:0;right:0;z-index:50;padding:0 1.5rem;">
+    <div style="max-width:72rem;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 0;">
+
+      <!-- Logo -->
+      <a href="#" style="display:flex;align-items:center;gap:11px;text-decoration:none;flex-shrink:0;">
+        <svg width="30" height="28" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Shark fin shape -->
+          <path d="M2 24 L7 7 Q9.5 1 15 2 Q20.5 1 23 7 L28 1 L22 15 Q19.5 21 15 23 L2 24Z" fill="#00c8f0" opacity="0.92"/>
+          <path d="M2 24 L15 24" stroke="#00c8f0" stroke-width="1" opacity="0.35"/>
+        </svg>
+        <span style="font-family:'Cormorant Garamond',serif;font-size:1.08rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#ddeeff;">Shark Bites</span>
+      </a>
+
+      <!-- Links (desktop) -->
+      <div class="hidden md:flex items-center" style="gap:2.5rem;">
+        <a href="#how" class="nav-link">How It Works</a>
+        <a href="#sports" class="nav-link">Sports</a>
+        <a href="#markets" class="nav-link">Markets</a>
+        <a href="#pricing" class="nav-link">Pricing</a>
+      </div>
+
+      <!-- CTA -->
+      <a href="#pricing" class="btn btn-primary btn-sm">Join Now</a>
+    </div>
+  </nav>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════════════════════════ -->
+  <section style="position:relative;min-height:100vh;display:flex;align-items:center;padding-top:5rem;" class="hero-bg">
+
+    <!-- Sonar rings (emanating from bottom-center) -->
+    <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">
+      <div style="position:absolute;bottom:-28%;left:50%;transform:translateX(-50%);width:190vw;height:190vw;">
+        <div class="sonar-ring" style="animation:sonar 7s ease-out infinite;animation-delay:0s;"></div>
+        <div class="sonar-ring" style="animation:sonar 7s ease-out infinite;animation-delay:1.75s;"></div>
+        <div class="sonar-ring" style="animation:sonar 7s ease-out infinite;animation-delay:3.5s;"></div>
+        <div class="sonar-ring" style="animation:sonar 7s ease-out infinite;animation-delay:5.25s;"></div>
+      </div>
+    </div>
+
+    <!-- Grid texture -->
+    <div class="bg-grid" style="position:absolute;inset:0;pointer-events:none;opacity:.55;"></div>
+
+    <!-- Hero content -->
+    <div style="position:relative;z-index:10;max-width:72rem;margin:0 auto;padding:0 1.5rem 9rem;width:100%;text-align:center;">
+
+      <!-- Live badge -->
+      <div class="anim d1" style="margin-bottom:2rem;">
+        <span style="display:inline-flex;align-items:center;gap:10px;padding:6px 16px;background:rgba(0,200,240,.07);border:1px solid rgba(0,200,240,.16);border-radius:2px;">
+          <span style="width:6px;height:6px;border-radius:50%;background:#00e0a8;flex-shrink:0;animation:blink 2s ease-in-out infinite;"></span>
+          <span class="label">Algorithmic Sports Trading</span>
+        </span>
+      </div>
+
+      <!-- Main headline -->
+      <h1 class="heading-hero anim d2" style="margin-bottom:.75rem;">
+        The algorithm<br>
+        <em style="font-style:italic;">finds the <span style="color:#00c8f0;text-shadow:0 0 55px rgba(0,200,240,.45);">edge.</span></em>
+      </h1>
+
+      <!-- Sub-headline -->
+      <p class="heading-hero anim d3" style="font-weight:300;opacity:.48;font-size:clamp(1.8rem,3.8vw,3.4rem);margin-bottom:2rem;">
+        You place the trade.
+      </p>
+
+      <!-- Body -->
+      <p class="body-text anim d4" style="max-width:560px;margin:0 auto 2.75rem;">
+        Real-time alerts on Kalshi and Polymarket props across NBA, MLB, NHL, NFL, and UFC — delivered the instant the edge appears, direct to Discord and Telegram.
+      </p>
+
+      <!-- CTAs -->
+      <div class="anim d5" style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;">
+        <a href="#pricing" class="btn btn-primary">
+          <!-- Discord icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.057a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+          </svg>
+          Join Discord
+        </a>
+        <a href="#pricing" class="btn btn-outline">
+          <!-- Telegram icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+          </svg>
+          Join Telegram
+        </a>
+      </div>
+
+      <!-- Scroll cue -->
+      <div class="anim d6" style="margin-top:6rem;">
+        <a href="#how" style="display:inline-flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none;color:rgba(0,200,240,.32);transition:color .2s ease;" onmouseover="this.style.color='rgba(0,200,240,.6)'" onmouseout="this.style.color='rgba(0,200,240,.32)'">
+          <span class="label" style="font-size:.58rem;">scroll</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 5v14M5 12l7 7 7-7"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Bottom fade -->
+    <div style="position:absolute;bottom:0;left:0;right:0;height:200px;background:linear-gradient(to bottom,transparent,#020c19);pointer-events:none;"></div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       TICKER
+  ══════════════════════════════════════════════════════════════ -->
+  <div style="background:#030e1e;border-top:1px solid rgba(0,200,240,.05);border-bottom:1px solid rgba(0,200,240,.05);overflow:hidden;padding:11px 0;">
+    <div class="ticker-track">
+      <!-- Copy 1 -->
+      <div style="display:flex;align-items:center;flex-shrink:0;">
+        <span class="label" style="padding:0 2rem;color:#2a5570;">NBA</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">MLB</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">NHL</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">NFL</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">UFC</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#00c8f0;opacity:.45;">Kalshi</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#00c8f0;opacity:.45;">Polymarket</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">Real-Time Alerts</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">Player Props</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">Prediction Markets</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">Algorithmic Edge</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">No Account Limits</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+      </div>
+      <!-- Copy 2 (identical — creates seamless loop) -->
+      <div style="display:flex;align-items:center;flex-shrink:0;" aria-hidden="true">
+        <span class="label" style="padding:0 2rem;color:#2a5570;">NBA</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">MLB</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">NHL</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">NFL</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">UFC</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#00c8f0;opacity:.45;">Kalshi</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#00c8f0;opacity:.45;">Polymarket</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">Real-Time Alerts</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">Player Props</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">Prediction Markets</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">Algorithmic Edge</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+        <span class="label" style="padding:0 2rem;color:#2a5570;">No Account Limits</span>
+        <span style="color:rgba(0,200,240,.18);font-family:'JetBrains Mono',monospace;font-size:.6rem;">·</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       HOW IT WORKS
+  ══════════════════════════════════════════════════════════════ -->
+  <section id="how" style="position:relative;padding:7rem 0;background:#020c19;">
+    <div style="max-width:72rem;margin:0 auto;padding:0 1.5rem;">
+
+      <!-- Section header -->
+      <div style="margin-bottom:4.5rem;">
+        <p class="label" style="margin-bottom:1rem;">How It Works</p>
+        <h2 class="heading-section">
+          Three steps.<br>
+          <em style="font-style:italic;opacity:.6;">Fully systematic.</em>
+        </h2>
+      </div>
+
+      <!-- Steps -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;">
+
+        <!-- Step 1 -->
+        <div class="card step-card">
+          <span class="step-watermark">01</span>
+          <div style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:1px solid rgba(0,200,240,.22);border-radius:2px;margin-bottom:1.5rem;">
+            <span class="label" style="font-size:.62rem;">01</span>
+          </div>
+          <!-- Icon: waveform / scan -->
+          <div style="margin-bottom:1.25rem;">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:rgba(0,200,240,.55);">
+              <path d="M2 18 L8 18 L10 8 L14 28 L18 6 L22 26 L26 14 L28 18 L34 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="heading-card" style="margin-bottom:.75rem;">Algorithm Scans</h3>
+          <p class="body-text">Our model continuously evaluates thousands of player props across five leagues, searching for market inefficiencies invisible to manual analysis.</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="card step-card" style="border-color:rgba(0,200,240,.12);">
+          <span class="step-watermark">02</span>
+          <div style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:1px solid rgba(0,200,240,.22);border-radius:2px;margin-bottom:1.5rem;">
+            <span class="label" style="font-size:.62rem;">02</span>
+          </div>
+          <!-- Icon: bolt / alert -->
+          <div style="margin-bottom:1.25rem;">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:rgba(0,200,240,.55);">
+              <path d="M20 4 L8 20 L17 20 L16 32 L28 16 L19 16 L20 4Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="heading-card" style="margin-bottom:.75rem;">Alert Fires</h3>
+          <p class="body-text">The moment an edge is detected, an alert hits your Discord channel and Telegram feed instantly — including the exact market, position, and confidence level.</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="card step-card">
+          <span class="step-watermark">03</span>
+          <div style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:1px solid rgba(0,200,240,.22);border-radius:2px;margin-bottom:1.5rem;">
+            <span class="label" style="font-size:.62rem;">03</span>
+          </div>
+          <!-- Icon: arrow / execute -->
+          <div style="margin-bottom:1.25rem;">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:rgba(0,200,240,.55);">
+              <circle cx="18" cy="18" r="14" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M13 18 L23 18 M19 13 L24 18 L19 23" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="heading-card" style="margin-bottom:.75rem;">You Trade</h3>
+          <p class="body-text">Open Kalshi or Polymarket, place the trade. The entire cycle — from edge detected to position live — takes under 60 seconds.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       SPORTS COVERED
+  ══════════════════════════════════════════════════════════════ -->
+  <section id="sports" style="padding:7rem 0;background:#040f20;">
+    <div style="max-width:72rem;margin:0 auto;padding:0 1.5rem;">
+
+      <!-- Section header -->
+      <div style="margin-bottom:4.5rem;">
+        <p class="label" style="margin-bottom:1rem;">Sports Covered</p>
+        <h2 class="heading-section">
+          Five leagues.<br>
+          <em style="font-style:italic;opacity:.6;">Endless edges.</em>
+        </h2>
+      </div>
+
+      <!-- Sports grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1.25rem;">
+
+        <!-- NBA -->
+        <div class="card sport-card">
+          <div style="margin-bottom:1.25rem;display:flex;justify-content:center;color:rgba(0,200,240,.5);">
+            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="21" cy="21" r="18" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="3" y1="21" x2="39" y2="21" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="21" y1="3" x2="21" y2="39" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M6 10 Q14 21 6 32" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M36 10 Q28 21 36 32" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            </svg>
+          </div>
+          <div class="mono-data" style="font-size:1.45rem;font-weight:600;color:#ddeeff;letter-spacing:.04em;margin-bottom:.35rem;">NBA</div>
+          <div class="mono-data" style="font-size:.68rem;color:#3a6080;letter-spacing:.06em;text-transform:uppercase;">Basketball</div>
+        </div>
+
+        <!-- MLB -->
+        <div class="card sport-card">
+          <div style="margin-bottom:1.25rem;display:flex;justify-content:center;color:rgba(0,200,240,.5);">
+            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="21" cy="21" r="18" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M12 5 C8 13 8 29 12 37" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M30 5 C34 13 34 29 30 37" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M9 15 L13 17 M9 21 L13 21 M9 27 L13 25" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+              <path d="M33 15 L29 17 M33 21 L29 21 M33 27 L29 25" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="mono-data" style="font-size:1.45rem;font-weight:600;color:#ddeeff;letter-spacing:.04em;margin-bottom:.35rem;">MLB</div>
+          <div class="mono-data" style="font-size:.68rem;color:#3a6080;letter-spacing:.06em;text-transform:uppercase;">Baseball</div>
+        </div>
+
+        <!-- NHL -->
+        <div class="card sport-card">
+          <div style="margin-bottom:1.25rem;display:flex;justify-content:center;color:rgba(0,200,240,.5);">
+            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Puck (cylinder) -->
+              <ellipse cx="21" cy="30" rx="15" ry="6" stroke="currentColor" stroke-width="1.5"/>
+              <ellipse cx="21" cy="24" rx="15" ry="6" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="6" y1="24" x2="6" y2="30" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="36" y1="24" x2="36" y2="30" stroke="currentColor" stroke-width="1.5"/>
+              <!-- Stick -->
+              <path d="M14 24 L14 10 Q14 7 17 7 L22 7 Q26 7 26 11 L26 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+            </svg>
+          </div>
+          <div class="mono-data" style="font-size:1.45rem;font-weight:600;color:#ddeeff;letter-spacing:.04em;margin-bottom:.35rem;">NHL</div>
+          <div class="mono-data" style="font-size:.68rem;color:#3a6080;letter-spacing:.06em;text-transform:uppercase;">Hockey</div>
+        </div>
+
+        <!-- NFL -->
+        <div class="card sport-card">
+          <div style="margin-bottom:1.25rem;display:flex;justify-content:center;color:rgba(0,200,240,.5);">
+            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="21" cy="21" rx="18" ry="11" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="21" y1="10" x2="21" y2="32" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="15" y1="17" x2="27" y2="17" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+              <line x1="14" y1="21" x2="28" y2="21" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+              <line x1="15" y1="25" x2="27" y2="25" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="mono-data" style="font-size:1.45rem;font-weight:600;color:#ddeeff;letter-spacing:.04em;margin-bottom:.35rem;">NFL</div>
+          <div class="mono-data" style="font-size:.68rem;color:#3a6080;letter-spacing:.06em;text-transform:uppercase;">Football</div>
+        </div>
+
+        <!-- UFC -->
+        <div class="card sport-card">
+          <div style="margin-bottom:1.25rem;display:flex;justify-content:center;color:rgba(0,200,240,.5);">
+            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Octagon -->
+              <polygon points="21,3 33,8.5 38.5,21 33,33.5 21,39 9,33.5 3.5,21 9,8.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <!-- Fist suggestion: small circle + knuckle lines -->
+              <circle cx="21" cy="19" r="5" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M16 22 Q21 27 26 22" stroke="currentColor" stroke-width="1" fill="none"/>
+            </svg>
+          </div>
+          <div class="mono-data" style="font-size:1.45rem;font-weight:600;color:#ddeeff;letter-spacing:.04em;margin-bottom:.35rem;">UFC</div>
+          <div class="mono-data" style="font-size:.68rem;color:#3a6080;letter-spacing:.06em;text-transform:uppercase;">MMA</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       MARKETS
+  ══════════════════════════════════════════════════════════════ -->
+  <section id="markets" style="padding:7rem 0;background:#020c19;">
+    <div style="max-width:72rem;margin:0 auto;padding:0 1.5rem;">
+
+      <!-- Section header -->
+      <div style="margin-bottom:4.5rem;max-width:600px;">
+        <p class="label" style="margin-bottom:1rem;">Trading Venues</p>
+        <h2 class="heading-section">
+          Prediction markets.<br>
+          <em style="font-style:italic;opacity:.6;">Not sportsbooks.</em>
+        </h2>
+        <p class="body-text" style="margin-top:1.5rem;">
+          Prediction markets are regulated financial instruments. They can't ban you, limit you, or close your account for winning. That's the structural advantage.
+        </p>
+      </div>
+
+      <!-- Market cards -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;">
+
+        <!-- Kalshi -->
+        <div class="card" style="padding:2.5rem;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.75rem;">
+            <div style="width:42px;height:42px;background:rgba(91,192,190,.1);border:1px solid rgba(91,192,190,.22);border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span class="mono-data" style="font-size:.95rem;font-weight:600;color:#5bc0be;">K</span>
+            </div>
+            <span class="mono-data" style="font-size:.92rem;font-weight:600;color:#ddeeff;letter-spacing:.1em;">KALSHI</span>
+          </div>
+          <p class="body-text">The first CFTC-regulated prediction market. Kalshi operates as a federally licensed derivatives exchange — every contract is a real financial instrument, not a wager subject to state gambling laws.</p>
+          <div style="margin-top:2rem;">
+            <span style="display:inline-flex;align-items:center;gap:7px;padding:5px 12px;background:rgba(91,192,190,.07);border:1px solid rgba(91,192,190,.16);border-radius:2px;">
+              <span style="width:5px;height:5px;border-radius:50%;background:#5bc0be;flex-shrink:0;"></span>
+              <span class="mono-data" style="font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:#5bc0be;">CFTC Regulated</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Polymarket -->
+        <div class="card" style="padding:2.5rem;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.75rem;">
+            <div style="width:42px;height:42px;background:rgba(50,160,255,.08);border:1px solid rgba(50,160,255,.2);border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span class="mono-data" style="font-size:.95rem;font-weight:600;color:#32a0ff;">P</span>
+            </div>
+            <span class="mono-data" style="font-size:.92rem;font-weight:600;color:#ddeeff;letter-spacing:.1em;">POLYMARKET</span>
+          </div>
+          <p class="body-text">The world's largest prediction market by volume. Peer-to-peer, on-chain resolution via UMA protocol. Transparent, borderless, and structurally impossible to limit winners.</p>
+          <div style="margin-top:2rem;">
+            <span style="display:inline-flex;align-items:center;gap:7px;padding:5px 12px;background:rgba(50,160,255,.06);border:1px solid rgba(50,160,255,.16);border-radius:2px;">
+              <span style="width:5px;height:5px;border-radius:50%;background:#32a0ff;flex-shrink:0;"></span>
+              <span class="mono-data" style="font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:#32a0ff;">On-Chain · Global</span>
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       PRICING
+  ══════════════════════════════════════════════════════════════ -->
+  <section id="pricing" style="padding:7rem 0;background:#040f20;">
+    <div style="max-width:72rem;margin:0 auto;padding:0 1.5rem;">
+
+      <!-- Section header -->
+      <div style="text-align:center;margin-bottom:4.5rem;">
+        <p class="label" style="margin-bottom:1rem;">Pricing</p>
+        <h2 class="heading-section">
+          One tier.<br>
+          <em style="font-style:italic;opacity:.6;">Everything included.</em>
+        </h2>
+      </div>
+
+      <!-- Pricing card -->
+      <div style="max-width:480px;margin:0 auto;">
+        <div class="card pricing-card" style="padding:3rem;">
+
+          <!-- Price -->
+          <div style="text-align:center;margin-bottom:2.5rem;padding-bottom:2.5rem;border-bottom:1px solid rgba(0,200,240,.07);">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(5rem,14vw,7rem);font-weight:300;line-height:1;letter-spacing:-.04em;color:#00c8f0;text-shadow:0 0 70px rgba(0,200,240,.28);">$99</div>
+            <div class="mono-data" style="font-size:.68rem;color:#3a6080;letter-spacing:.14em;text-transform:uppercase;margin-top:.6rem;">per month · cancel anytime</div>
+          </div>
+
+          <!-- Features -->
+          <div style="margin-bottom:2.5rem;">
+
+            <div class="feat">
+              <span class="mono-data" style="font-size:.75rem;color:#00e0a8;flex-shrink:0;margin-top:1px;">✓</span>
+              <span>NBA, MLB, NHL, NFL &amp; UFC coverage</span>
+            </div>
+            <div class="feat">
+              <span class="mono-data" style="font-size:.75rem;color:#00e0a8;flex-shrink:0;margin-top:1px;">✓</span>
+              <span>Real-time Discord alerts</span>
+            </div>
+            <div class="feat">
+              <span class="mono-data" style="font-size:.75rem;color:#00e0a8;flex-shrink:0;margin-top:1px;">✓</span>
+              <span>Real-time Telegram alerts</span>
+            </div>
+            <div class="feat">
+              <span class="mono-data" style="font-size:.75rem;color:#00e0a8;flex-shrink:0;margin-top:1px;">✓</span>
+              <span>Full algorithm output &amp; analysis</span>
+            </div>
+            <div class="feat">
+              <span class="mono-data" style="font-size:.75rem;color:#00e0a8;flex-shrink:0;margin-top:1px;">✓</span>
+              <span>Kalshi + Polymarket trade picks</span>
+            </div>
+            <div class="feat">
+              <span class="mono-data" style="font-size:.75rem;color:#3a6080;flex-shrink:0;margin-top:1px;">◎</span>
+              <span style="color:#3a6080;">Auto-trade mode <span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.08em;background:rgba(0,200,240,.06);border:1px solid rgba(0,200,240,.12);border-radius:2px;padding:2px 7px;margin-left:6px;color:#00c8f0;">COMING SOON</span></span>
+            </div>
+
+          </div>
+
+          <!-- Join buttons -->
+          <div style="display:flex;flex-direction:column;gap:.75rem;">
+            <a href="#" class="btn btn-primary" style="justify-content:center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.057a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+              </svg>
+              Join on Discord
+            </a>
+            <a href="#" class="btn btn-outline" style="justify-content:center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+              </svg>
+              Join on Telegram
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════════════════════ -->
+  <footer style="background:#020c19;padding:5rem 0 3rem;border-top:1px solid rgba(0,200,240,.06);">
+    <div style="max-width:72rem;margin:0 auto;padding:0 1.5rem;">
+
+      <!-- Top row -->
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:3rem;margin-bottom:3.5rem;">
+
+        <!-- Brand -->
+        <div style="max-width:260px;">
+          <div style="display:flex;align-items:center;gap:11px;margin-bottom:1rem;">
+            <svg width="28" height="26" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 24 L7 7 Q9.5 1 15 2 Q20.5 1 23 7 L28 1 L22 15 Q19.5 21 15 23 L2 24Z" fill="#00c8f0" opacity="0.7"/>
+              <path d="M2 24 L15 24" stroke="#00c8f0" stroke-width="1" opacity="0.3"/>
+            </svg>
+            <span style="font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#ddeeff;">Shark Bites</span>
+          </div>
+          <p style="font-family:'Cormorant Garamond',serif;font-style:italic;color:#2a5570;font-size:.95rem;line-height:1.6;">The algorithm finds the edge.</p>
+        </div>
+
+        <!-- Nav links -->
+        <div style="display:flex;gap:4rem;flex-wrap:wrap;">
+          <div>
+            <p class="label" style="margin-bottom:1.25rem;opacity:.5;">Navigate</p>
+            <div style="display:flex;flex-direction:column;gap:.75rem;">
+              <a href="#how" class="nav-link">How It Works</a>
+              <a href="#sports" class="nav-link">Sports</a>
+              <a href="#markets" class="nav-link">Markets</a>
+              <a href="#pricing" class="nav-link">Pricing</a>
+            </div>
+          </div>
+          <div>
+            <p class="label" style="margin-bottom:1.25rem;opacity:.5;">Join</p>
+            <div style="display:flex;flex-direction:column;gap:.75rem;">
+              <a href="#" class="nav-link">Discord</a>
+              <a href="#" class="nav-link">Telegram</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Divider -->
+      <div class="divider" style="margin-bottom:2rem;"></div>
+
+      <!-- Disclaimer -->
+      <p class="mono-data" style="font-size:.6rem;color:#1e3a55;line-height:1.75;max-width:640px;margin-bottom:1rem;">
+        Shark Bites provides algorithmic trade alerts for informational purposes only. This is not financial advice. Prediction market trading involves risk of loss. Past algorithm performance does not guarantee future results. Trade only what you can afford to lose. Shark Bites has no affiliation with Kalshi or Polymarket.
+      </p>
+      <p class="mono-data" style="font-size:.58rem;color:#142a40;">&copy; 2026 Shark Bites. All rights reserved.</p>
+
+    </div>
+  </footer>
+
+</body>
+</html>
