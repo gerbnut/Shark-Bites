@@ -331,6 +331,7 @@
         <a href="#how" class="nav-link">How It Works</a>
         <a href="#sports" class="nav-link">Sports</a>
         <a href="#markets" class="nav-link">Markets</a>
+        <a href="#results" class="nav-link">Results</a>
         <a href="#pricing" class="nav-link">Pricing</a>
       </div>
 
@@ -721,9 +722,129 @@
 
 
   <!-- ══════════════════════════════════════════════════════════
+       RESULTS
+  ══════════════════════════════════════════════════════════════ -->
+  <section id="results" style="padding:7rem 0;background:#040f20;">
+    <div style="max-width:72rem;margin:0 auto;padding:0 1.5rem;">
+
+      <!-- Section header -->
+      <div style="margin-bottom:4rem;max-width:640px;">
+        <p class="label" style="margin-bottom:1rem;">Track Record</p>
+        <h2 class="heading-section">
+          Real data.<br>
+          <em style="font-style:italic;opacity:.6;">No fabrication.</em>
+        </h2>
+        <p class="body-text" style="margin-top:1.5rem;">
+          Every trade logged since day one. The chart below is the raw cumulative P&amp;L from our live calibration period — tracked in real money on traditional sportsbooks. The algorithm is actively refined. On Kalshi and Polymarket, there are no account restrictions to cap the upside.
+        </p>
+      </div>
+
+      <!-- Stats grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:1px;background:rgba(0,200,240,.07);border:1px solid rgba(0,200,240,.07);border-radius:2px;margin-bottom:3rem;overflow:hidden;">
+        <div style="background:#040f20;padding:1.75rem 2rem;">
+          <div class="label" style="color:#2a5570;margin-bottom:.6rem;font-size:.6rem;">Bets Tracked</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;color:#ddeeff;line-height:1;">1,131</div>
+        </div>
+        <div style="background:#040f20;padding:1.75rem 2rem;">
+          <div class="label" style="color:#2a5570;margin-bottom:.6rem;font-size:.6rem;">Avg Model Edge</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;color:#ddeeff;line-height:1;">9.8%</div>
+        </div>
+        <div style="background:#040f20;padding:1.75rem 2rem;">
+          <div class="label" style="color:#2a5570;margin-bottom:.6rem;font-size:.6rem;">Winning Days</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;color:#ddeeff;line-height:1;">58%</div>
+          <div class="mono-data" style="font-size:.6rem;color:#1e3a55;margin-top:.3rem;">of active trading days</div>
+        </div>
+        <div style="background:#040f20;padding:1.75rem 2rem;">
+          <div class="label" style="color:#2a5570;margin-bottom:.6rem;font-size:.6rem;">Peak P&amp;L</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;color:#00c8f0;line-height:1;text-shadow:0 0 28px rgba(0,200,240,.3);">+$419</div>
+          <div class="mono-data" style="font-size:.6rem;color:#1e3a55;margin-top:.3rem;">reached in 10 days</div>
+        </div>
+      </div>
+
+      <!-- P&L Chart -->
+      <div style="background:rgba(7,24,40,.72);border:1px solid rgba(0,200,240,.09);border-radius:2px;padding:1.75rem 1.5rem 1.25rem;">
+
+        <!-- Chart header -->
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <span class="label">Cumulative P&amp;L</span>
+            <span class="mono-data" style="font-size:.6rem;color:#2a5570;margin-left:1rem;">Jan 29 – Mar 7, 2026 · NBA Props</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:1.25rem;align-items:center;">
+            <span style="display:flex;align-items:center;gap:6px;">
+              <span style="width:22px;height:1.5px;background:rgba(0,130,190,.45);display:inline-block;border-radius:1px;"></span>
+              <span class="mono-data" style="font-size:.6rem;color:#3a6080;">Calibration</span>
+            </span>
+            <span style="display:flex;align-items:center;gap:6px;">
+              <span style="width:22px;height:2px;background:#00c8f0;display:inline-block;border-radius:1px;"></span>
+              <span class="mono-data" style="font-size:.6rem;color:#7aaac8;">Post-Refinement</span>
+            </span>
+            <span style="display:flex;align-items:center;gap:6px;">
+              <span style="width:1px;height:14px;border-left:1px dashed rgba(232,148,12,.65);display:inline-block;"></span>
+              <span class="mono-data" style="font-size:.6rem;color:rgba(232,148,12,.7);">Strategy Refined</span>
+            </span>
+          </div>
+        </div>
+
+        <canvas id="pnlChart" style="display:block;width:100%;"></canvas>
+
+        <p class="mono-data" style="font-size:.58rem;color:#1a3348;margin-top:1.25rem;line-height:1.75;">
+          Tracked on FanDuel, DraftKings &amp; theScore during calibration phase · Traditional sportsbooks restrict winning accounts — Kalshi and Polymarket do not · All active trading days included · Edge threshold raised +2pp on Feb 26
+        </p>
+      </div>
+
+      <!-- The Edge callouts -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.25rem;margin-top:2.5rem;">
+
+        <!-- Plus-money -->
+        <div class="card" style="padding:1.75rem;">
+          <div style="margin-bottom:1rem;color:rgba(0,200,240,.55);">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M16 10 L16 22 M10 16 L22 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;color:#ddeeff;margin-bottom:.5rem;letter-spacing:-.01em;">~50% Plus-Money</h4>
+          <p class="body-text" style="font-size:.88rem;">Roughly half of all alerts are plus-odds plays. A sub-50% hit rate can still be highly profitable when the wins pay out at plus prices.</p>
+        </div>
+
+        <!-- Correlated wins -->
+        <div class="card" style="padding:1.75rem;">
+          <div style="margin-bottom:1rem;color:rgba(0,200,240,.55);">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="19" r="6" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="22" cy="19" r="6" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M10 7 L16 7 L22 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M16 7 L16 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;color:#ddeeff;margin-bottom:.5rem;letter-spacing:-.01em;">Correlated Wins</h4>
+          <p class="body-text" style="font-size:.88rem;">When the model reads a game correctly, multiple props within that matchup cash together. One right game read compounds into several simultaneous winners.</p>
+        </div>
+
+        <!-- Value filtered -->
+        <div class="card" style="padding:1.75rem;">
+          <div style="margin-bottom:1rem;color:rgba(0,200,240,.55);">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 8 L27 8 L20 16 L20 26 L12 22 L12 16 Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;color:#ddeeff;margin-bottom:.5rem;letter-spacing:-.01em;">Value-Filtered Only</h4>
+          <p class="body-text" style="font-size:.88rem;">Every alert has cleared a minimum edge threshold. No guesses, no gut feels — only plays where the model identifies a clear pricing gap in the market.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
        PRICING
   ══════════════════════════════════════════════════════════════ -->
-  <section id="pricing" style="padding:7rem 0;background:#040f20;">
+  <section id="pricing" style="padding:7rem 0;background:#020c19;">
     <div style="max-width:72rem;margin:0 auto;padding:0 1.5rem;">
 
       <!-- Section header -->
@@ -827,6 +948,7 @@
               <a href="#how" class="nav-link">How It Works</a>
               <a href="#sports" class="nav-link">Sports</a>
               <a href="#markets" class="nav-link">Markets</a>
+              <a href="#results" class="nav-link">Results</a>
               <a href="#pricing" class="nav-link">Pricing</a>
             </div>
           </div>
@@ -852,6 +974,203 @@
 
     </div>
   </footer>
+
+
+  <script>
+  (function () {
+    var canvas = document.getElementById('pnlChart');
+    if (!canvas) return;
+
+    // Cumulative P&L — every active trading day (Jan 29 – Mar 7, 2026)
+    var data = [
+      0,       // Start
+      78.00,   // 1/29
+      146.40,  // 1/30
+      25.22,   // 1/31
+      43.53,   // 2/1
+      65.79,   // 2/2
+      239.18,  // 2/3
+      289.84,  // 2/4
+      199.31,  // 2/6
+      209.35,  // 2/7
+      419.03,  // 2/8  ← peak
+      296.91,  // 2/9
+      367.40,  // 2/10
+      188.99,  // 2/11
+      218.08,  // 2/12
+      25.37,   // 2/19
+     -153.84,  // 2/20
+     -132.09,  // 2/21
+     -571.73,  // 2/22
+     -491.52,  // 2/23
+     -558.47,  // 2/24
+     -578.92,  // 2/25  ← trough
+     -302.92,  // 2/26  ← strategy refined (+2pp threshold)
+     -276.40,  // 2/27
+     -513.31,  // 2/28
+     -486.29,  // 3/1
+     -572.25,  // 3/2
+     -416.47,  // 3/3
+     -269.84,  // 3/4
+      -14.54,  // 3/5  ← near breakeven
+     -253.86,  // 3/6
+     -289.66   // 3/7
+    ];
+
+    var xlabels = [
+      'Start','1/29','1/30','1/31','2/1','2/2','2/3','2/4',
+      '2/6','2/7','2/8','2/9','2/10','2/11','2/12',
+      '2/19','2/20','2/21','2/22','2/23','2/24','2/25',
+      '2/26','2/27','2/28','3/1','3/2','3/3','3/4','3/5','3/6','3/7'
+    ];
+
+    var RI  = 22;   // refinement index (2/26)
+    var CH  = 280;  // canvas CSS height
+    var YMX = 500;
+    var YMN = -700;
+
+    function draw() {
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var container = canvas.parentElement;
+      var W = container.clientWidth - 48; // 24px pad each side
+      if (W <= 60) return;
+
+      canvas.width  = W * dpr;
+      canvas.height = CH * dpr;
+      canvas.style.width  = W  + 'px';
+      canvas.style.height = CH + 'px';
+
+      var ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+
+      var p  = { t: 30, r: 18, b: 42, l: 62 };
+      var cw = W - p.l - p.r;
+      var ch = CH - p.t - p.b;
+
+      function tx(i) { return p.l + (i / (data.length - 1)) * cw; }
+      function ty(v) { return p.t + ((YMX - v) / (YMX - YMN)) * ch; }
+      var yZ = ty(0);
+
+      // ── Grid & Y-axis labels ────────────────────────────────
+      [-500, -250, 0, 250, 500].forEach(function (v) {
+        var y = ty(v);
+        ctx.beginPath();
+        ctx.strokeStyle = v === 0 ? 'rgba(0,200,240,0.22)' : 'rgba(0,200,240,0.04)';
+        ctx.lineWidth = 1;
+        if (v !== 0) ctx.setLineDash([3, 7]);
+        ctx.moveTo(p.l, y); ctx.lineTo(p.l + cw, y);
+        ctx.stroke(); ctx.setLineDash([]);
+        ctx.font = '9px "JetBrains Mono",monospace';
+        ctx.fillStyle = v === 0 ? 'rgba(0,200,240,0.42)' : 'rgba(58,96,128,0.55)';
+        ctx.textAlign = 'right';
+        ctx.fillText((v > 0 ? '+' : '') + '$' + (v === 0 ? '0' : v), p.l - 7, y + 3.5);
+      });
+
+      // ── Area fills ──────────────────────────────────────────
+      function drawAreaPath() {
+        ctx.beginPath();
+        data.forEach(function (v, i) {
+          var x = tx(i), y = ty(v);
+          i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        });
+      }
+
+      // Green fill above zero
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(p.l, p.t, cw, Math.max(0, yZ - p.t));
+      ctx.clip();
+      drawAreaPath();
+      ctx.lineTo(tx(data.length - 1), yZ);
+      ctx.lineTo(tx(0), yZ);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(0,224,168,0.10)';
+      ctx.fill();
+      ctx.restore();
+
+      // Red fill below zero
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(p.l, yZ, cw, p.t + ch - yZ + 2);
+      ctx.clip();
+      drawAreaPath();
+      ctx.lineTo(tx(data.length - 1), yZ);
+      ctx.lineTo(tx(0), yZ);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(255,55,55,0.07)';
+      ctx.fill();
+      ctx.restore();
+
+      // ── Lines ───────────────────────────────────────────────
+      // Phase 1 (calibration) — muted
+      ctx.beginPath();
+      for (var i = 0; i <= RI; i++) {
+        var x = tx(i), y = ty(data[i]);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = 'rgba(0,130,190,0.42)';
+      ctx.lineWidth = 1.5;
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+
+      // Phase 2 (post-refinement) — bright signal
+      ctx.beginPath();
+      for (var j = RI; j < data.length; j++) {
+        var xj = tx(j), yj = ty(data[j]);
+        j === RI ? ctx.moveTo(xj, yj) : ctx.lineTo(xj, yj);
+      }
+      ctx.strokeStyle = '#00c8f0';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // ── Refinement annotation ────────────────────────────────
+      var rx = tx(RI);
+      ctx.beginPath();
+      ctx.setLineDash([3, 5]);
+      ctx.strokeStyle = 'rgba(232,148,12,0.6)';
+      ctx.lineWidth = 1;
+      ctx.moveTo(rx, p.t + 2); ctx.lineTo(rx, p.t + ch + 2);
+      ctx.stroke(); ctx.setLineDash([]);
+      ctx.font = '600 8px "JetBrains Mono",monospace';
+      ctx.fillStyle = 'rgba(232,148,12,0.78)';
+      ctx.textAlign = 'center';
+      ctx.fillText('REFINED', rx, p.t + 14);
+
+      // ── Peak dot & label ─────────────────────────────────────
+      var peakIdx = data.indexOf(Math.max.apply(null, data));
+      var pkx = tx(peakIdx), pky = ty(data[peakIdx]);
+      ctx.beginPath(); ctx.arc(pkx, pky, 3.5, 0, 6.283);
+      ctx.fillStyle = '#00e0a8'; ctx.fill();
+      ctx.font = '600 9px "JetBrains Mono",monospace';
+      ctx.fillStyle = 'rgba(0,224,168,0.88)';
+      ctx.textAlign = 'center';
+      ctx.fillText('+$419', pkx, pky - 9);
+
+      // ── Current dot (animated ring) ──────────────────────────
+      var lx = tx(data.length - 1), ly = ty(data[data.length - 1]);
+      ctx.beginPath(); ctx.arc(lx, ly, 4, 0, 6.283);
+      ctx.fillStyle = '#00c8f0'; ctx.fill();
+      ctx.beginPath(); ctx.arc(lx, ly, 7.5, 0, 6.283);
+      ctx.strokeStyle = 'rgba(0,200,240,0.22)'; ctx.lineWidth = 1.5; ctx.stroke();
+
+      // ── X-axis labels (sparse) ───────────────────────────────
+      [0, 5, 10, 14, 18, 22, 25, 29, 31].forEach(function (i) {
+        if (i >= xlabels.length) return;
+        ctx.font = '8.5px "JetBrains Mono",monospace';
+        ctx.fillStyle = i === RI ? 'rgba(232,148,12,0.6)' : 'rgba(58,96,128,0.5)';
+        ctx.textAlign = 'center';
+        ctx.fillText(xlabels[i], tx(i), p.t + ch + 18);
+      });
+    }
+
+    draw();
+    var _rt;
+    window.addEventListener('resize', function () {
+      clearTimeout(_rt);
+      _rt = setTimeout(draw, 80);
+    });
+  }());
+  </script>
 
 </body>
 </html>
