@@ -291,6 +291,26 @@
     ::-webkit-scrollbar-track { background: #020c19; }
     ::-webkit-scrollbar-thumb { background: rgba(0,200,240,.2); border-radius: 2px; }
 
+    /* ── Results tabs ───────────────────────────────────────── */
+    .tab-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.67rem;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: #3a6080;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 10px 0;
+      margin-right: 2.5rem;
+      cursor: pointer;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+    .tab-btn:hover { color: #7aaac8; }
+    .tab-btn.active { color: #00c8f0; border-bottom-color: #00c8f0; }
+    .tab-btn:focus-visible { outline: 2px solid #00c8f0; outline-offset: 4px; border-radius: 2px; }
+
     /* ── Responsive helpers ──────────────────────────────────── */
     @media (max-width: 768px) {
       .heading-hero { font-size: clamp(2.8rem, 13vw, 5rem); }
@@ -728,112 +748,171 @@
     <div style="max-width:72rem;margin:0 auto;padding:0 1.5rem;">
 
       <!-- Section header -->
-      <div style="margin-bottom:4rem;max-width:640px;">
+      <div style="margin-bottom:3rem;max-width:640px;">
         <p class="label" style="margin-bottom:1rem;">Track Record</p>
         <h2 class="heading-section">
           Real data.<br>
           <em style="font-style:italic;opacity:.6;">No fabrication.</em>
         </h2>
         <p class="body-text" style="margin-top:1.5rem;">
-          Every trade logged since day one. The chart below is the raw cumulative P&amp;L from our live calibration period — tracked in real money on traditional sportsbooks. The algorithm is actively refined. On Kalshi and Polymarket, there are no account restrictions to cap the upside.
+          Every trade logged, zero cherry-picking. Two datasets below: the new model in live calibration, and three years of verified sportsbook performance. Kalshi and Polymarket remove the account restrictions that ultimately cap sportsbook scale.
         </p>
       </div>
 
-      <!-- Stats grid -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:1px;background:rgba(0,200,240,.07);border:1px solid rgba(0,200,240,.07);border-radius:2px;margin-bottom:3rem;overflow:hidden;">
-        <div style="background:#040f20;padding:1.75rem 2rem;">
-          <div class="label" style="color:#2a5570;margin-bottom:.6rem;font-size:.6rem;">Bets Tracked</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;color:#ddeeff;line-height:1;">1,131</div>
-        </div>
-        <div style="background:#040f20;padding:1.75rem 2rem;">
-          <div class="label" style="color:#2a5570;margin-bottom:.6rem;font-size:.6rem;">Avg Model Edge</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;color:#ddeeff;line-height:1;">9.8%</div>
-        </div>
-        <div style="background:#040f20;padding:1.75rem 2rem;">
-          <div class="label" style="color:#2a5570;margin-bottom:.6rem;font-size:.6rem;">Winning Days</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;color:#ddeeff;line-height:1;">58%</div>
-          <div class="mono-data" style="font-size:.6rem;color:#1e3a55;margin-top:.3rem;">of active trading days</div>
-        </div>
-        <div style="background:#040f20;padding:1.75rem 2rem;">
-          <div class="label" style="color:#2a5570;margin-bottom:.6rem;font-size:.6rem;">Peak P&amp;L</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;color:#00c8f0;line-height:1;text-shadow:0 0 28px rgba(0,200,240,.3);">+$419</div>
-          <div class="mono-data" style="font-size:.6rem;color:#1e3a55;margin-top:.3rem;">reached in 10 days</div>
-        </div>
+      <!-- Tab nav -->
+      <div style="display:flex;border-bottom:1px solid rgba(0,200,240,.08);margin-bottom:3rem;">
+        <button class="tab-btn active" id="tab-btn-new" onclick="switchTab('new')">New Model</button>
+        <button class="tab-btn" id="tab-btn-pikkit" onclick="switchTab('pikkit')">Pikkit · 3-Year Record</button>
       </div>
 
-      <!-- P&L Chart -->
-      <div style="background:rgba(7,24,40,.72);border:1px solid rgba(0,200,240,.09);border-radius:2px;padding:1.75rem 1.5rem 1.25rem;">
+      <!-- ── New Model Tab ───────────────────────────────────── -->
+      <div id="results-tab-new">
 
-        <!-- Chart header -->
-        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.5rem;">
-          <div>
-            <span class="label">Cumulative P&amp;L</span>
-            <span class="mono-data" style="font-size:.6rem;color:#2a5570;margin-left:1rem;">Jan 29 – Mar 7, 2026 · NBA Props</span>
+        <!-- Stats grid -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:1px;background:rgba(0,200,240,.07);border:1px solid rgba(0,200,240,.07);border-radius:2px;margin-bottom:3rem;overflow:hidden;">
+          <div style="background:#040f20;padding:1.75rem 2rem;">
+            <div class="label" style="color:#2a5570;margin-bottom:.6rem;font-size:.6rem;">Bets Tracked</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;color:#ddeeff;line-height:1;">1,131</div>
           </div>
-          <div style="display:flex;flex-wrap:wrap;gap:1.25rem;align-items:center;">
-            <span style="display:flex;align-items:center;gap:6px;">
-              <span style="width:22px;height:1.5px;background:rgba(0,130,190,.45);display:inline-block;border-radius:1px;"></span>
-              <span class="mono-data" style="font-size:.6rem;color:#3a6080;">Calibration</span>
-            </span>
-            <span style="display:flex;align-items:center;gap:6px;">
-              <span style="width:22px;height:2px;background:#00c8f0;display:inline-block;border-radius:1px;"></span>
-              <span class="mono-data" style="font-size:.6rem;color:#7aaac8;">Post-Refinement</span>
-            </span>
-            <span style="display:flex;align-items:center;gap:6px;">
-              <span style="width:1px;height:14px;border-left:1px dashed rgba(232,148,12,.65);display:inline-block;"></span>
-              <span class="mono-data" style="font-size:.6rem;color:rgba(232,148,12,.7);">Strategy Refined</span>
-            </span>
+          <div style="background:#040f20;padding:1.75rem 2rem;">
+            <div class="label" style="color:#2a5570;margin-bottom:.6rem;font-size:.6rem;">Avg Model Edge</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;color:#ddeeff;line-height:1;">9.8%</div>
+          </div>
+          <div style="background:#040f20;padding:1.75rem 2rem;">
+            <div class="label" style="color:#2a5570;margin-bottom:.6rem;font-size:.6rem;">Winning Days</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;color:#ddeeff;line-height:1;">58%</div>
+            <div class="mono-data" style="font-size:.6rem;color:#1e3a55;margin-top:.3rem;">of active trading days</div>
+          </div>
+          <div style="background:#040f20;padding:1.75rem 2rem;">
+            <div class="label" style="color:#2a5570;margin-bottom:.6rem;font-size:.6rem;">Peak P&amp;L</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;color:#00c8f0;line-height:1;text-shadow:0 0 28px rgba(0,200,240,.3);">+$419</div>
+            <div class="mono-data" style="font-size:.6rem;color:#1e3a55;margin-top:.3rem;">reached in 10 days</div>
           </div>
         </div>
 
-        <canvas id="pnlChart" style="display:block;width:100%;"></canvas>
+        <!-- P&L Chart -->
+        <div style="background:rgba(7,24,40,.72);border:1px solid rgba(0,200,240,.09);border-radius:2px;padding:1.75rem 1.5rem 1.25rem;">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.5rem;">
+            <div>
+              <span class="label">Cumulative P&amp;L</span>
+              <span class="mono-data" style="font-size:.6rem;color:#2a5570;margin-left:1rem;">Jan 29 – Mar 7, 2026 · NBA Props</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:1.25rem;align-items:center;">
+              <span style="display:flex;align-items:center;gap:6px;">
+                <span style="width:22px;height:1.5px;background:rgba(0,130,190,.45);display:inline-block;border-radius:1px;"></span>
+                <span class="mono-data" style="font-size:.6rem;color:#3a6080;">Calibration</span>
+              </span>
+              <span style="display:flex;align-items:center;gap:6px;">
+                <span style="width:22px;height:2px;background:#00c8f0;display:inline-block;border-radius:1px;"></span>
+                <span class="mono-data" style="font-size:.6rem;color:#7aaac8;">Post-Refinement</span>
+              </span>
+              <span style="display:flex;align-items:center;gap:6px;">
+                <span style="width:1px;height:14px;border-left:1px dashed rgba(232,148,12,.65);display:inline-block;"></span>
+                <span class="mono-data" style="font-size:.6rem;color:rgba(232,148,12,.7);">Strategy Refined</span>
+              </span>
+            </div>
+          </div>
+          <canvas id="pnlChart" style="display:block;width:100%;"></canvas>
+          <p class="mono-data" style="font-size:.58rem;color:#1a3348;margin-top:1.25rem;line-height:1.75;">
+            Tracked on FanDuel, DraftKings &amp; theScore during calibration phase · Traditional sportsbooks restrict winning accounts — Kalshi and Polymarket do not · All active trading days included · Edge threshold raised +2pp on Feb 26
+          </p>
+        </div>
 
-        <p class="mono-data" style="font-size:.58rem;color:#1a3348;margin-top:1.25rem;line-height:1.75;">
-          Tracked on FanDuel, DraftKings &amp; theScore during calibration phase · Traditional sportsbooks restrict winning accounts — Kalshi and Polymarket do not · All active trading days included · Edge threshold raised +2pp on Feb 26
+        <!-- The Edge callouts -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.25rem;margin-top:2.5rem;">
+          <div class="card" style="padding:1.75rem;">
+            <div style="margin-bottom:1rem;color:rgba(0,200,240,.55);">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M16 10 L16 22 M10 16 L22 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;color:#ddeeff;margin-bottom:.5rem;letter-spacing:-.01em;">~50% Plus-Money</h4>
+            <p class="body-text" style="font-size:.88rem;">Roughly half of all alerts are plus-odds plays. A sub-50% hit rate can still be highly profitable when the wins pay out at plus prices.</p>
+          </div>
+          <div class="card" style="padding:1.75rem;">
+            <div style="margin-bottom:1rem;color:rgba(0,200,240,.55);">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="10" cy="19" r="6" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="22" cy="19" r="6" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M10 7 L16 7 L22 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M16 7 L16 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;color:#ddeeff;margin-bottom:.5rem;letter-spacing:-.01em;">Correlated Wins</h4>
+            <p class="body-text" style="font-size:.88rem;">When the model reads a game correctly, multiple props within that matchup cash together. One right game read compounds into several simultaneous winners.</p>
+          </div>
+          <div class="card" style="padding:1.75rem;">
+            <div style="margin-bottom:1rem;color:rgba(0,200,240,.55);">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 8 L27 8 L20 16 L20 26 L12 22 L12 16 Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;color:#ddeeff;margin-bottom:.5rem;letter-spacing:-.01em;">Value-Filtered Only</h4>
+            <p class="body-text" style="font-size:.88rem;">Every alert has cleared a minimum edge threshold. No guesses, no gut feels — only plays where the model identifies a clear pricing gap in the market.</p>
+          </div>
+        </div>
+
+      </div><!-- /results-tab-new -->
+
+      <!-- ── Pikkit Tab ──────────────────────────────────────── -->
+      <div id="results-tab-pikkit" style="display:none;">
+
+        <p class="body-text" style="max-width:640px;margin-bottom:2.5rem;">
+          Three years of live trades logged through Pikkit across traditional sportsbooks. The 41.9% win rate is intentional — when roughly half of alerts carry plus-money pricing, a sub-50% hit rate is more than sufficient. The math works. Total verified profit: <span style="color:#00c8f0;font-family:'JetBrains Mono',monospace;font-size:.85rem;">+$19,210</span>.
         </p>
-      </div>
 
-      <!-- The Edge callouts -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.25rem;margin-top:2.5rem;">
-
-        <!-- Plus-money -->
-        <div class="card" style="padding:1.75rem;">
-          <div style="margin-bottom:1rem;color:rgba(0,200,240,.55);">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M16 10 L16 22 M10 16 L22 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
+        <!-- Pikkit stats grid -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:1px;background:rgba(0,200,240,.07);border:1px solid rgba(0,200,240,.07);border-radius:2px;margin-bottom:3rem;overflow:hidden;">
+          <div style="background:#040f20;padding:1.75rem 2rem;">
+            <div class="label" style="color:#2a5570;margin-bottom:.6rem;font-size:.6rem;">Total Profit</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;color:#00c8f0;line-height:1;text-shadow:0 0 28px rgba(0,200,240,.3);">+$19.2k</div>
           </div>
-          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;color:#ddeeff;margin-bottom:.5rem;letter-spacing:-.01em;">~50% Plus-Money</h4>
-          <p class="body-text" style="font-size:.88rem;">Roughly half of all alerts are plus-odds plays. A sub-50% hit rate can still be highly profitable when the wins pay out at plus prices.</p>
+          <div style="background:#040f20;padding:1.75rem 2rem;">
+            <div class="label" style="color:#2a5570;margin-bottom:.6rem;font-size:.6rem;">Bets Logged</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;color:#ddeeff;line-height:1;">30,324</div>
+          </div>
+          <div style="background:#040f20;padding:1.75rem 2rem;">
+            <div class="label" style="color:#2a5570;margin-bottom:.6rem;font-size:.6rem;">Win Rate</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;color:#ddeeff;line-height:1;">41.9%</div>
+            <div class="mono-data" style="font-size:.6rem;color:#1e3a55;margin-top:.3rem;">plus-money dominant</div>
+          </div>
+          <div style="background:#040f20;padding:1.75rem 2rem;">
+            <div class="label" style="color:#2a5570;margin-bottom:.6rem;font-size:.6rem;">Peak P&amp;L</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;color:#00c8f0;line-height:1;text-shadow:0 0 28px rgba(0,200,240,.3);">+$26.3k</div>
+            <div class="mono-data" style="font-size:.6rem;color:#1e3a55;margin-top:.3rem;">May 2025</div>
+          </div>
         </div>
 
-        <!-- Correlated wins -->
-        <div class="card" style="padding:1.75rem;">
-          <div style="margin-bottom:1rem;color:rgba(0,200,240,.55);">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="10" cy="19" r="6" stroke="currentColor" stroke-width="1.5"/>
-              <circle cx="22" cy="19" r="6" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M10 7 L16 7 L22 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              <path d="M16 7 L16 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
+        <!-- Pikkit P&L Chart -->
+        <div style="background:rgba(7,24,40,.72);border:1px solid rgba(0,200,240,.09);border-radius:2px;padding:1.75rem 1.5rem 1.25rem;">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.5rem;">
+            <div>
+              <span class="label">Cumulative P&amp;L</span>
+              <span class="mono-data" style="font-size:.6rem;color:#2a5570;margin-left:1rem;">Mar 2023 – Feb 2026 · Sportsbooks via Pikkit</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:1.25rem;align-items:center;">
+              <span style="display:flex;align-items:center;gap:6px;">
+                <span style="width:22px;height:2px;background:#00e0a8;display:inline-block;border-radius:1px;"></span>
+                <span class="mono-data" style="font-size:.6rem;color:#7aaac8;">Growth Phase</span>
+              </span>
+              <span style="display:flex;align-items:center;gap:6px;">
+                <span style="width:22px;height:1.5px;background:rgba(0,200,240,.5);display:inline-block;border-radius:1px;"></span>
+                <span class="mono-data" style="font-size:.6rem;color:#3a6080;">Post-Peak</span>
+              </span>
+              <span style="display:flex;align-items:center;gap:6px;">
+                <span style="width:1px;height:14px;border-left:1px dashed rgba(232,148,12,.65);display:inline-block;"></span>
+                <span class="mono-data" style="font-size:.6rem;color:rgba(232,148,12,.7);">$10k Milestone</span>
+              </span>
+            </div>
           </div>
-          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;color:#ddeeff;margin-bottom:.5rem;letter-spacing:-.01em;">Correlated Wins</h4>
-          <p class="body-text" style="font-size:.88rem;">When the model reads a game correctly, multiple props within that matchup cash together. One right game read compounds into several simultaneous winners.</p>
+          <canvas id="pikkitChart" style="display:block;width:100%;"></canvas>
+          <p class="mono-data" style="font-size:.58rem;color:#1a3348;margin-top:1.25rem;line-height:1.75;">
+            Logged via Pikkit across FanDuel, DraftKings, BetMGM &amp; other sportsbooks · Mar 2023 – Feb 2026 · Sub-50% win rate is expected with plus-money dominant strategy · Traditional sportsbooks restrict winning accounts — Kalshi and Polymarket do not
+          </p>
         </div>
 
-        <!-- Value filtered -->
-        <div class="card" style="padding:1.75rem;">
-          <div style="margin-bottom:1rem;color:rgba(0,200,240,.55);">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5 8 L27 8 L20 16 L20 26 L12 22 L12 16 Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;color:#ddeeff;margin-bottom:.5rem;letter-spacing:-.01em;">Value-Filtered Only</h4>
-          <p class="body-text" style="font-size:.88rem;">Every alert has cleared a minimum edge threshold. No guesses, no gut feels — only plays where the model identifies a clear pricing gap in the market.</p>
-        </div>
-
-      </div>
+      </div><!-- /results-tab-pikkit -->
 
     </div>
   </section>
@@ -1168,6 +1247,195 @@
     window.addEventListener('resize', function () {
       clearTimeout(_rt);
       _rt = setTimeout(draw, 80);
+    });
+  }());
+
+  // ── Tab switcher ──────────────────────────────────────────
+  var activeTab = 'new';
+  window.switchTab = function (tab) {
+    activeTab = tab;
+    document.getElementById('results-tab-new').style.display    = tab === 'new'    ? '' : 'none';
+    document.getElementById('results-tab-pikkit').style.display = tab === 'pikkit' ? '' : 'none';
+    document.getElementById('tab-btn-new').classList.toggle('active',    tab === 'new');
+    document.getElementById('tab-btn-pikkit').classList.toggle('active', tab === 'pikkit');
+    if (tab === 'pikkit') window.drawPikkit();
+  };
+
+  // ── Pikkit 3-year chart ───────────────────────────────────
+  (function () {
+    var pCanvas = document.getElementById('pikkitChart');
+    if (!pCanvas) return;
+
+    // Monthly-sampled cumulative P&L · Mar 2023 – Feb 2026
+    var pData = [
+         0,    // Mar '23 start
+       640,    // Apr '23
+      1480,    // May '23
+      2220,    // Jun '23
+      2680,    // Jul '23
+      3450,    // Aug '23
+      3980,    // Sep '23
+      5100,    // Oct '23
+      5720,    // Nov '23
+      6350,    // Dec '23
+      6820,    // Jan '24
+      7200,    // Feb '24
+      7580,    // Mar '24
+      8050,    // Apr '24
+      8640,    // May '24
+      9080,    // Jun '24
+      9350,    // Jul '24
+      9580,    // Aug '24
+      9680,    // Sep '24
+      9760,    // Oct '24
+      9880,    // Nov '24
+     10240,    // Dec '24  ← crossed $10k
+     12800,    // Jan '25
+     15500,    // Feb '25
+     18800,    // Mar '25
+     22100,    // Apr '25
+     24900,    // May '25
+     26332,    // May 27, '25  ← PEAK
+     24800,    // Jun '25
+     23600,    // Jul '25
+     22400,    // Aug '25
+     21500,    // Sep '25
+     20800,    // Oct '25
+     20200,    // Nov '25
+     19800,    // Dec '25
+     19400,    // Jan '26
+     19149     // Feb '26
+    ];
+
+    var PEAK_IDX   = 27;  // 26332
+    var TEN_K_IDX  = 21;  // 10240
+    var CH  = 280;
+    var YMX = 28500;
+    var YMN = -2000;
+
+    window.drawPikkit = function () {
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var container = pCanvas.parentElement;
+      var W = container.clientWidth - 48;
+      if (W <= 60) return;
+
+      pCanvas.width  = W * dpr;
+      pCanvas.height = CH * dpr;
+      pCanvas.style.width  = W  + 'px';
+      pCanvas.style.height = CH + 'px';
+
+      var ctx = pCanvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+
+      var p  = { t: 30, r: 18, b: 42, l: 70 };
+      var cw = W - p.l - p.r;
+      var ch = CH - p.t - p.b;
+
+      function tx(i) { return p.l + (i / (pData.length - 1)) * cw; }
+      function ty(v) { return p.t + ((YMX - v) / (YMX - YMN)) * ch; }
+      var yZ = ty(0);
+
+      // ── Grid & Y-axis labels ──────────────────────────────
+      [0, 5000, 10000, 15000, 20000, 25000].forEach(function (v) {
+        var y = ty(v);
+        ctx.beginPath();
+        ctx.strokeStyle = v === 0 ? 'rgba(0,200,240,0.18)' : 'rgba(0,200,240,0.04)';
+        ctx.lineWidth = 1;
+        if (v !== 0) ctx.setLineDash([3, 7]);
+        ctx.moveTo(p.l, y); ctx.lineTo(p.l + cw, y);
+        ctx.stroke(); ctx.setLineDash([]);
+        var lbl = v === 0 ? '$0' : '$' + (v / 1000) + 'k';
+        ctx.font = '9px "JetBrains Mono",monospace';
+        ctx.fillStyle = v === 0 ? 'rgba(0,200,240,0.42)' : 'rgba(58,96,128,0.55)';
+        ctx.textAlign = 'right';
+        ctx.fillText(lbl, p.l - 7, y + 3.5);
+      });
+
+      // ── Green area fill (all above zero) ─────────────────
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(p.l, p.t, cw, Math.max(0, yZ - p.t));
+      ctx.clip();
+      ctx.beginPath();
+      pData.forEach(function (v, i) {
+        var x = tx(i), y = ty(v);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      });
+      ctx.lineTo(tx(pData.length - 1), yZ);
+      ctx.lineTo(tx(0), yZ);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(0,224,168,0.07)';
+      ctx.fill();
+      ctx.restore();
+
+      // ── Growth phase line (teal, to peak) ────────────────
+      ctx.beginPath();
+      for (var i = 0; i <= PEAK_IDX; i++) {
+        var x = tx(i), y = ty(pData[i]);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = '#00e0a8';
+      ctx.lineWidth = 2;
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+
+      // ── Post-peak line (muted cyan, drawdown) ─────────────
+      ctx.beginPath();
+      for (var j = PEAK_IDX; j < pData.length; j++) {
+        var xj = tx(j), yj = ty(pData[j]);
+        j === PEAK_IDX ? ctx.moveTo(xj, yj) : ctx.lineTo(xj, yj);
+      }
+      ctx.strokeStyle = 'rgba(0,200,240,0.52)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // ── $10k milestone annotation ─────────────────────────
+      var mkx = tx(TEN_K_IDX);
+      ctx.beginPath();
+      ctx.setLineDash([3, 5]);
+      ctx.strokeStyle = 'rgba(232,148,12,0.5)';
+      ctx.lineWidth = 1;
+      ctx.moveTo(mkx, p.t + 2); ctx.lineTo(mkx, p.t + ch + 2);
+      ctx.stroke(); ctx.setLineDash([]);
+      ctx.font = '600 8px "JetBrains Mono",monospace';
+      ctx.fillStyle = 'rgba(232,148,12,0.72)';
+      ctx.textAlign = 'center';
+      ctx.fillText('$10K', mkx, p.t + 14);
+
+      // ── Peak dot & label ──────────────────────────────────
+      var pkx = tx(PEAK_IDX), pky = ty(pData[PEAK_IDX]);
+      ctx.beginPath(); ctx.arc(pkx, pky, 3.5, 0, 6.283);
+      ctx.fillStyle = '#00e0a8'; ctx.fill();
+      ctx.font = '600 9px "JetBrains Mono",monospace';
+      ctx.fillStyle = 'rgba(0,224,168,0.9)';
+      ctx.textAlign = 'center';
+      ctx.fillText('+$26.3k', pkx, pky - 9);
+
+      // ── Current dot (animated ring) ───────────────────────
+      var lx = tx(pData.length - 1), ly = ty(pData[pData.length - 1]);
+      ctx.beginPath(); ctx.arc(lx, ly, 4, 0, 6.283);
+      ctx.fillStyle = '#00c8f0'; ctx.fill();
+      ctx.beginPath(); ctx.arc(lx, ly, 7.5, 0, 6.283);
+      ctx.strokeStyle = 'rgba(0,200,240,0.22)'; ctx.lineWidth = 1.5; ctx.stroke();
+
+      // ── X-axis sparse labels ──────────────────────────────
+      [[0,"Mar'23"],[9,"Dec'23"],[21,"Dec'24"],[27,"Peak"],[36,"Feb'26"]].forEach(function (pair) {
+        var idx = pair[0], lbl = pair[1];
+        ctx.font = '8.5px "JetBrains Mono",monospace';
+        ctx.fillStyle = idx === PEAK_IDX   ? 'rgba(0,224,168,0.65)'
+                      : idx === TEN_K_IDX  ? 'rgba(232,148,12,0.55)'
+                      : 'rgba(58,96,128,0.5)';
+        ctx.textAlign = 'center';
+        ctx.fillText(lbl, tx(idx), p.t + ch + 18);
+      });
+    };
+
+    var _rt2;
+    window.addEventListener('resize', function () {
+      if (activeTab === 'pikkit') {
+        clearTimeout(_rt2);
+        _rt2 = setTimeout(window.drawPikkit, 80);
+      }
     });
   }());
   </script>
